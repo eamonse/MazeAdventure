@@ -1,0 +1,44 @@
+{
+  "tests": [
+    {
+      "name": "Test Linear Test",
+      "setup": "",
+      "run": "python -m unittest tests.maze_adventure_tests.MazeAdventureTests.test_linear_path",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test All Rooms Same Time Requirement",
+      "setup": "",
+      "run": "python -m unittest tests.maze_adventure_tests.MazeAdventureTests.test_all_rooms_same_size",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Test Long Good Path",
+      "setup": "",
+      "run": "python -m unittest tests.maze_adventure_tests.MazeAdventureTests.test_adventure_good_path",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 3
+    },
+    {
+      "name": "Test No Solution Path",
+      "setup": "",
+      "run": "python -m unittest tests.maze_adventure_tests.MazeAdventureTests.test_adventure_no_path",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 3
+    }
+  ]
+}
