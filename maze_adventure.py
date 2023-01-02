@@ -36,8 +36,10 @@ TIME_TAKEN_TO_ARRIVE_HERE_KEY = "time_taken"
 # Note: you can add whatever attributes you would like to this class.  It does not have to be limited to the parameters
 class MazeRoom:
     def __init__(self, rooms_you_can_go_to: List[Dict], item: str = None, requires: str = None) -> None:
-        pass
+        self.rooms_you_can_go_to = rooms_you_can_go_to
+        #not doing the locked extension
 
+        #the dict contains name:time (both strings)
 
 
 # Class: Maze
@@ -61,7 +63,14 @@ class Maze:
     #
     # Note: you can add whatever attributes you would like.  It does not have to be limited to the parameters.
     def __init__(self, maze: Dict, start_room: str, end_room: str) -> None:  
-        pass
+        self.maze = maze
+        #the maze has the room name and then the mazeroom
+        #the mazeroom itself has a room name and the time required
+    
+        self.start_room = start_room
+        self.end_room = end_room
+        
+
 
     # solve_maze
     # ***************************************************
@@ -76,7 +85,63 @@ class Maze:
     # Important: Use deepcopy(object) to make separate copies of an object and all its inner components. Also
     # the start room should have 0 as its time taken.
     def solve_maze(self) -> Stack[Dict]:
-        pass
+        path = Stack()
+        if self.start_room == self.end_room:
+            #if the start and ending rooms are the same then theres no path
+            return path
+        possible_paths = Queue()
+        completed_rooms = set()
+        end_found = False
+        #initializing
+
+
+        path.push({self.start_room:TIME_TAKEN_TO_ARRIVE_HERE_KEY})
+        completed_rooms.add(self.start_room)
+        start_mazeroom = self.maze.get(self.start_room)
+        #grab the starting mazeroom
+        for x in start_mazeroom.rooms_you_can_go_to:
+            new_path = deepcopy(path)
+            new_path.push(x)
+            #copy and add the second room 
+            new_room = new_path.peek()
+            if new_room.get(ROOM_KEY) == self.end_room:
+                return new_path
+            possible_paths.enqueue(new_path)
+        
+
+        #The stack - path - has the starting room already in (dicts{roomname:mazeroom})
+        #the queue - possible paths - has the possible paths ready (stacks of dicts)
+        #the set - completed rooms - has the start room only as of now (string)
+
+
+        while not(end_found):
+            
+            #access the possible rooms you can go to, copy the original path then progress w enqueue/dequeue
+            current_path = possible_paths.dequeue()
+            
+            
+                      
+           
+
+            break
+
+
+            
+            
+
+            
+            
+            
+
+
+
+
+            
+
+
+        
+
+
 
 
     # implements_locked_room_extension (optional for Locked Room Extension only)
