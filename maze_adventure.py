@@ -84,17 +84,17 @@ class Maze:
     def solve_maze(self) -> Stack[Dict]:
         path = Stack()
         if self.start_room == self.end_room:
-            return path
+            return None
         possible_paths = Queue()
+        times = Queue()
         end_found = False
         completed_paths = set()
-        counter = 0
+        counter = 1
         #initializing
 
 
         path.push({ROOM_KEY:self.start_room, TIME_TAKEN_TO_ARRIVE_HERE_KEY:0})
         completed_paths.add(self.start_room)
-        counter+=1
         start_mazeroom = self.maze.get(self.start_room)
         #grab the starting mazeroom
         for dicts in start_mazeroom.rooms_you_can_go_to:
@@ -106,6 +106,7 @@ class Maze:
             if dicts.get(ROOM_KEY) == self.end_room:
                 return new_path
             possible_paths.enqueue(new_path)
+            times.enqueue(dicts.get(TIME_TAKEN_TO_ARRIVE_HERE_KEY))
     
         
 
@@ -116,12 +117,13 @@ class Maze:
 
         while not(end_found):
             current_path = possible_paths.dequeue()
+            current_time = times.dequeue()
             current_mazeroom_name = current_path.peek().get(ROOM_KEY)
             current_mazeroom = self.maze.get(current_mazeroom_name)
             #grab a path and the mazeroom it was on
             for dicts in current_mazeroom.rooms_you_can_go_to:
                 #loop over possible rooms to go through from that mazeroom
-                counter +=1
+                
                 room_visited = False
                 for x in completed_paths:
                     if dicts.get(ROOM_KEY) == completed_paths:
@@ -130,18 +132,26 @@ class Maze:
                 if room_visited:
                     continue
                 #if it has been, dont copy and move on to check the next one
-                
+                counter +=1
                 
                 new_path = deepcopy(current_path)
                 new_dict = {ROOM_KEY:dicts.get(ROOM_KEY), TIME_TAKEN_TO_ARRIVE_HERE_KEY:dicts.get(TIME_NEEDED_KEY)}
-                new_path.push(new_dict)
+                if new_dict.get(TIME_TAKEN_TO_ARRIVE_HERE_KEY) > 2:
+                    pass
+                else:
+                    new_path.push(new_dict)
                 completed_paths.add(new_dict.get(ROOM_KEY))
                 if dicts.get(ROOM_KEY) == self.end_room:
                     return new_path
                 possible_paths.enqueue(new_path)
-            if counter > len(self.maze):
+                times.enqueue(dicts.get(TIME_TAKEN_TO_ARRIVE_HERE_KEY))
+            no_more_rooms = True
+            for dicts in current_mazeroom.rooms_you_can_go_to:
+                for x in completed_paths:
+                    if dicts.get(ROOM_KEY) != x:
+                        no_more_rooms = False
+            if counter > len(completed_paths)*len(self.maze):
                 return None
-            
             
 
 
