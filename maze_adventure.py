@@ -121,6 +121,7 @@ class Maze:
             #grab a path and the mazeroom it was on
             for dicts in current_mazeroom.rooms_you_can_go_to:
                 #loop over possible rooms to go through from that mazeroom
+                counter +=1
                 room_visited = False
                 for x in completed_paths:
                     if dicts.get(ROOM_KEY) == completed_paths:
@@ -129,7 +130,7 @@ class Maze:
                 if room_visited:
                     continue
                 #if it has been, dont copy and move on to check the next one
-                counter +=1
+                
                 
                 new_path = deepcopy(current_path)
                 new_dict = {ROOM_KEY:dicts.get(ROOM_KEY), TIME_TAKEN_TO_ARRIVE_HERE_KEY:dicts.get(TIME_NEEDED_KEY)}
@@ -138,7 +139,8 @@ class Maze:
                 if dicts.get(ROOM_KEY) == self.end_room:
                     return new_path
                 possible_paths.enqueue(new_path)
-            
+            if counter > len(self.maze):
+                return None
             
             
 
