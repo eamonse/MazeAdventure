@@ -39,8 +39,6 @@ class MazeRoom:
         self.rooms_you_can_go_to = rooms_you_can_go_to
         #not doing the locked extension
 
-        #the dict contains name:time (both strings)
-
 
 # Class: Maze
 # ***************************************************
@@ -66,7 +64,6 @@ class Maze:
         self.maze = maze
         #the maze has the room name and then the mazeroom
         #the mazeroom itself has a room name and the time required
-    
         self.start_room = start_room
         self.end_room = end_room
         
@@ -87,53 +84,63 @@ class Maze:
     def solve_maze(self) -> Stack[Dict]:
         path = Stack()
         if self.start_room == self.end_room:
-            #if the start and ending rooms are the same then theres no path
             return path
         possible_paths = Queue()
-        completed_rooms = set()
         end_found = False
+        completed_paths = set()
+        counter = 0
         #initializing
 
 
-        path.push({self.start_room:TIME_TAKEN_TO_ARRIVE_HERE_KEY})
-        completed_rooms.add(self.start_room)
+        path.push({ROOM_KEY:self.start_room, TIME_TAKEN_TO_ARRIVE_HERE_KEY:0})
+        completed_paths.add(self.start_room)
+        counter+=1
         start_mazeroom = self.maze.get(self.start_room)
         #grab the starting mazeroom
-        for x in start_mazeroom.rooms_you_can_go_to:
+        for dicts in start_mazeroom.rooms_you_can_go_to:
             new_path = deepcopy(path)
-            new_path.push(x)
-            #copy and add the second room 
-            new_room = new_path.peek()
-            if new_room.get(ROOM_KEY) == self.end_room:
+            new_dict = {ROOM_KEY:dicts.get(ROOM_KEY), TIME_TAKEN_TO_ARRIVE_HERE_KEY:dicts.get(TIME_NEEDED_KEY)}
+            new_path.push(new_dict)
+            completed_paths.add(new_dict.get(ROOM_KEY))
+            counter+=1
+            if dicts.get(ROOM_KEY) == self.end_room:
                 return new_path
             possible_paths.enqueue(new_path)
+    
         
 
-        #The stack - path - has the starting room already in (dicts{roomname:mazeroom})
+        #The stack - path - has the starting room already in (dicts)
         #the queue - possible paths - has the possible paths ready (stacks of dicts)
         #the set - completed rooms - has the start room only as of now (string)
 
 
         while not(end_found):
-            
-            #access the possible rooms you can go to, copy the original path then progress w enqueue/dequeue
             current_path = possible_paths.dequeue()
+            current_mazeroom_name = current_path.peek().get(ROOM_KEY)
+            current_mazeroom = self.maze.get(current_mazeroom_name)
+            #grab a path and the mazeroom it was on
+            for dicts in current_mazeroom.rooms_you_can_go_to:
+                #loop over possible rooms to go through from that mazeroom
+                room_visited = False
+                for x in completed_paths:
+                    if dicts.get(ROOM_KEY) == completed_paths:
+                        room_visited = True
+                #double check to make sure one of those rooms hasnt already been visited
+                if room_visited:
+                    continue
+                #if it has been, dont copy and move on to check the next one
+                counter +=1
+                
+                new_path = deepcopy(current_path)
+                new_dict = {ROOM_KEY:dicts.get(ROOM_KEY), TIME_TAKEN_TO_ARRIVE_HERE_KEY:dicts.get(TIME_NEEDED_KEY)}
+                new_path.push(new_dict)
+                completed_paths.add(new_dict.get(ROOM_KEY))
+                if dicts.get(ROOM_KEY) == self.end_room:
+                    return new_path
+                possible_paths.enqueue(new_path)
             
             
-                      
-           
-
-            break
-
-
             
-            
-
-            
-            
-            
-
-
 
 
             
